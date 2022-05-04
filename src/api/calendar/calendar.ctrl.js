@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import Joi from "joi";
 import sanitizeHtml from "sanitize-html";
 
+const { ObjectId } = mongoose.Types;
+
 const sanitizeOption = {
     allowedTags: [
         'h1',
@@ -28,6 +30,26 @@ const sanitizeOption = {
 };
 
 export const getCalendarById = async(ctx, next) => {
+    const { id } = ctx.params;
+    if(!ObjectId.isValid(id)){
+        ctx.status = 400; //Bad Request
+        return;
+    }
+
+    try{
+        const calendar = await Calendar.findById(id);
+        if(!calendar){
+            ctx.status = 404; // Not Found
+            return;
+        }
+        ctx.state.calendar = calendar;
+        return next();                    
+    }catch (e){
+        ctx.throw(500, e);
+    }
+}
+
+export const getCalendarDay = async(ctx, next) => {
     const { checkDate } = ctx.params;
     if(typeof checkDate !== 'string'){
         ctx.status = 400; //Bad Request
@@ -35,14 +57,18 @@ export const getCalendarById = async(ctx, next) => {
     }
 
     const query = {
-        ...(checkDate ? {
-            'startDay' : checkDate,
-            'endDay' : checkDate,
+        ...(checkDate ? {$or :[
+            {'startDay' : checkDate},
+            {'endDay' : checkDate},
+        ]
     } : {}),
     };
 
     try{
-        const calendar = await Calendar.find(query);
+        const calendar = await Calendar.find(query)
+                                        .sort({ _id: -1})
+                                        .lean()  // 해당 데이터를 JSON형태로 조회
+                                        .exec();
         if(!calendar){
             ctx.status = 404; // Not Found
             return;
@@ -154,9 +180,38 @@ export const read = async ctx => {
 
 export const remove = async ctx => {
     const { id } = ctx.params;
+    const { checkDate } = ctx.request.body;
     try{
-        await Calendar.findByIdAndRemove(id).exec();
-        ctx.status = 204; // No Content (성공하기는 했지만 응답할 데이터는 없음)
+        const flag = await Calendar.findByIdAndRemove(id).exec();
+        console.log(flag, ctx.request, 'flag');
+        if(!flag){
+            if(typeof checkDate !== 'string'){
+                ctx.status = 400; //Bad Request
+                return;
+            }
+        
+            const query = {
+                ...(checkDate ? {$or :[
+                    {'startDay' : checkDate},
+                    {'endDay' : checkDate},
+                ]
+            } : {}),
+            };
+            console.log(query);
+            try{
+                const calendar = await Calendar.find(query)
+                                                .sort({ _id: -1})
+                                                .lean()  // 해당 데이터를 JSON형태로 조회
+                                                .exec();
+                if(!calendar){
+                    ctx.status = 404; // Not Found
+                    return;
+                }
+                ctx.state.calendar = calendar;
+            }catch (e){
+                ctx.throw(500, e);
+            }
+        }
     }catch (e){
         ctx.throw(500, e);
     }
@@ -166,13 +221,29 @@ export const update = async ctx => {
     const { id } = ctx.params;
     // write에서 사용한 schema와 비슷한데, required()가 없습니다.
     const schema = Joi.object().keys({
-       title: Joi.string(),
-       body: Joi.string(),
-       startDay: Joi.string(),
-       startDate: Joi.string(),
-       endDay: Joi.string(),
-       endDate: Joi.string(),
-       label: Joi.string(),
+        // 객체가 다음 필드를 가지고 있음을 검증
+        title: Joi.string().required(), // required()가 있으면 필수 항목
+        body: Joi.string().required(),
+        startDay: Joi.string().required(),
+        startDate: {
+            year: Joi.string().required(),
+            month: Joi.string().required(),
+            date: Joi.string().required(),
+            hour: Joi.string().required(),
+            min: Joi.string().required(),
+        },
+        endDay: Joi.string().required(),
+        endDate: {
+            year: Joi.string().required(),
+            month: Joi.string().required(),
+            date: Joi.string().required(),
+            hour: Joi.string().required(),
+            min: Joi.string().required(),
+        },
+        label: {
+            style: Joi.string().required(),
+            text: Joi.string().required(),
+        }
     });
 
     // 검증하고 나서 검증 실패인 경우 에러 차리
