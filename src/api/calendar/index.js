@@ -12,6 +12,7 @@ calendar.get('/', calendarCtrl.read);
 calendar.delete('/', checkLoggedIn, calendarCtrl.checkOwnCalendar, calendarCtrl.remove); //로그인과 등록자 동일여부 확인
 calendar.patch('/', checkLoggedIn, calendarCtrl.checkOwnCalendar, calendarCtrl.update); //로그인과 등록자 동일여부 확인
 
-calendars.use('/:checkDate', calendarCtrl.getCalendarById, calendar.routes());
+calendars.use('/view/:checkDate', calendarCtrl.getCalendarDay, calendar.routes());
+calendars.use('/:id', calendarCtrl.getCalendarById, calendar.routes());
 
 export default calendars;
