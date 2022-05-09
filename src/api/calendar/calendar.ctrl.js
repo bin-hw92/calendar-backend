@@ -180,38 +180,9 @@ export const read = async ctx => {
 
 export const remove = async ctx => {
     const { id } = ctx.params;
-    const { checkDate } = ctx.request.body;
     try{
-        const flag = await Calendar.findByIdAndRemove(id).exec();
-        console.log(flag, ctx.request, 'flag');
-        if(!flag){
-            if(typeof checkDate !== 'string'){
-                ctx.status = 400; //Bad Request
-                return;
-            }
-        
-            const query = {
-                ...(checkDate ? {$or :[
-                    {'startDay' : checkDate},
-                    {'endDay' : checkDate},
-                ]
-            } : {}),
-            };
-            console.log(query);
-            try{
-                const calendar = await Calendar.find(query)
-                                                .sort({ _id: -1})
-                                                .lean()  // 해당 데이터를 JSON형태로 조회
-                                                .exec();
-                if(!calendar){
-                    ctx.status = 404; // Not Found
-                    return;
-                }
-                ctx.state.calendar = calendar;
-            }catch (e){
-                ctx.throw(500, e);
-            }
-        }
+        await Calendar.findByIdAndRemove(id).exec();
+        ctx.status = 204; // No Content (성공하기는 했지만 응답할 데이터는 없음)
     }catch (e){
         ctx.throw(500, e);
     }
