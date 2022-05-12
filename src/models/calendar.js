@@ -30,6 +30,10 @@ const CalendarSchema = new Schema({
     label: {
         style: String,
         text: String,
+    },
+    table: {
+        _id: mongoose.Types.ObjectId,
+        title: String,
     }
 });
 
