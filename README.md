@@ -27,15 +27,16 @@
 ![Screenshot 2022-05-12 at 17 37 09](https://user-images.githubusercontent.com/45866008/168028805-826bed67-daa7-4b00-a0a2-134ae4c4b8ff.jpg)
 
 #### 달력 목록화면
-![Screenshot 2022-05-12 at 17 35 33](https://user-images.githubusercontent.com/45866008/168028777-b34678ae-8d1e-4b10-8dec-e2bb40bd063d.jpg)
-#### 달력 목록화면(Loading)
 ![Screenshot 2022-05-12 at 17 36 08](https://user-images.githubusercontent.com/45866008/168028785-3f578ae6-3ec1-4968-b0a6-4f9d74b50e9c.jpg)
+#### 달력 목록화면(Loading)
+![Screenshot 2022-05-12 at 17 36 56](https://user-images.githubusercontent.com/45866008/168028798-44dc6a7d-4b16-42cc-a05b-147ba9bc0bc0.jpg)
 
 #### 할 일 등록화면
-![Screenshot 2022-05-12 at 17 36 20](https://user-images.githubusercontent.com/45866008/168028788-061b8d3a-cc59-4d65-8fa4-6334adaa9020.jpg)
+![Screenshot 2022-05-12 at 17 35 33](https://user-images.githubusercontent.com/45866008/168028777-b34678ae-8d1e-4b10-8dec-e2bb40bd063d.jpg)
 
 #### 할 일 목록화면
 ![Screenshot 2022-05-12 at 17 36 46](https://user-images.githubusercontent.com/45866008/168028793-fa8d8d01-e308-4e90-87ca-e8a7c99115ec.jpg)
 
 #### 할 일 목록화면(Loading)
-![Screenshot 2022-05-12 at 17 36 56](https://user-images.githubusercontent.com/45866008/168028798-44dc6a7d-4b16-42cc-a05b-147ba9bc0bc0.jpg)
+![Screenshot 2022-05-12 at 17 36 20](https://user-images.githubusercontent.com/45866008/168028788-061b8d3a-cc59-4d65-8fa4-6334adaa9020.jpg)
+
