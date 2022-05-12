@@ -56,10 +56,20 @@ export const getCalendarDay = async(ctx, next) => {
         return;
     }
 
+    //$or, $and는 다들 아는 것
+    //$gte:해당 값보다 크거나 같은 컬럼 값, 이상, $gt:해당 값보다 큰 컬럼 값, 초과 
+    //$lte:해당 값보다 작거나 같은 컬럼 값, 이하, $lt:해당 값보다 작은 컬럼 값, 미만
     const query = {
-        ...(checkDate ? {$or :[
-            {'startDay' : checkDate},
-            {'endDay' : checkDate},
+        ...(checkDate ? {$or:[
+            {$and :[
+                {'startDay' : {'$lte': checkDate}},
+                {'endDay' : {'$gte' : checkDate}},
+                ]
+            },
+            {$or : [{'startDay' : checkDate},
+                    {'endDay' : checkDate},
+                ]
+            }
         ]
     } : {}),
     };
@@ -124,6 +134,7 @@ export const write = async ctx => {
         endDate,
         label,
         user: ctx.state.user,
+        table: ctx.state.table,
     });
     
     try{
@@ -146,16 +157,40 @@ const removeHtmlAndShorten = body => {
     GET /api/calendar?year=&month=
 */
 export const list = async ctx => {
-    const year = ctx.query.year || ''+new Date().getFullYear;
-    const month = ctx.query.month ||  ("0" + (1 + new Date().getMonth())).slice(-2);
-    if(year.length < 1 || month.length < 1){
+    const startDay = ctx.query.start;
+    const endDay = ctx.query.end;
+    if(startDay.length < 1 || endDay.length < 1){
         ctx.status = 400;
         return;
     }
 
+    const startDate = startDay.split('.');
+    const endDate = endDay.split('.');
+
+    //$gte:해당 값보다 크거나 같은 컬럼 값, 이상, $gt:해당 값보다 큰 컬럼 값, 초과 
+    //$lte:해당 값보다 작거나 같은 컬럼 값, 이하, $lt:해당 값보다 작은 컬럼 값, 미만
     const query = {
-        ...(year ? {'startDate.year' : year} : {}),
-        ...(month ? {'startDate.month' : month} : {}),
+        ...(startDay && endDay ? {$or:[
+                {$and : [
+                        {'startDate.year' : startDate[0]},
+                        {$and : [
+                            {'startDate.month' : {'$gte' : startDate[1]}},
+                            {'startDate.month' : {'$lte' : endDate[1]}},
+                            ]
+                        },
+                    ]
+                },
+                {$and : [
+                        {'endDate.year' : startDate[0]},
+                        {$and : [
+                            {'endDate.month' : {'$gte' : startDate[1]}},
+                            {'endDate.month' : {'$lte' : endDate[1]}},
+                            ]
+                        },
+                    ]
+                },
+            ]
+        } : {}),
     };
 
     try{
@@ -168,6 +203,8 @@ export const list = async ctx => {
         ctx.body = calendar.map(calendar => ({
                         ...calendar,
                         body: removeHtmlAndShorten(calendar.body),
+                        daysize: calendar.startDay === calendar.endDay? 0 
+                        : (new Date(calendar.endDay) - new Date(calendar.startDay)) / 1000 / 60 / 60 / 24, //같은 날짜면 0, 아니면 일 수 차이 반환
                     })); //길이가 200자 이상이면 자르기
     }catch (e){
         ctx.throw(500, e);
