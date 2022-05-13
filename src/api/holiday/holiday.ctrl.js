@@ -13,9 +13,8 @@ export const list = async ctx => {
 
     try{
         const answer = await axios.get(`${baseUrl}?solYear=${year}&numOfRows=100&_type=json&ServiceKey=${key}`).then(result => result.data.response.body.items.item);
-        const response = [];
-        if(answer !== undefined) response.push(answer);
-        ctx.body = response;
+        if(answer === undefined) ctx.body = [];
+        else ctx.body = answer;
     }catch(e){
         ctx.throw(500, e);
     }
