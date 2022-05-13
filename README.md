@@ -47,3 +47,7 @@
 #### 할 일 목록화면(Loading)
 ![Screenshot 2022-05-12 at 17 36 46](https://user-images.githubusercontent.com/45866008/168028793-fa8d8d01-e308-4e90-87ca-e8a7c99115ec.jpg)
 
+
+#### 사용 영상
+https://user-images.githubusercontent.com/45866008/168207287-1904294d-ffcc-46b6-bd3d-f0de30a730c0.mp4
+
