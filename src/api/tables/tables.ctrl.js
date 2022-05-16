@@ -1,4 +1,4 @@
-import Table from "../../models/tables";
+import Tables from "../../models/tables";
 import mongoose from "mongoose";
 import Joi from "joi";
 import sanitizeHtml from "sanitize-html";
@@ -37,7 +37,7 @@ export const getTableById = async(ctx, next) => {
     }
 
     try{
-        const table = await Table.findById(id);
+        const table = await Tables.findById(id);
         // 포스트가 존재하지 않을 때
         if(!table){
             ctx.status = 404; // Not Found
@@ -55,6 +55,7 @@ export const write = async ctx => {
         // 객체가 다음 필드를 가지고 있음을 검증
         title: Joi.string().required(), // required()가 있으면 필수 항목
         body: Joi.string().required(),
+        password: Joi.string().required(),
         users: Joi.array()
             .items(Joi.string())
             .required(), //문자열로 이루어진 배열
@@ -67,8 +68,8 @@ export const write = async ctx => {
         return;
     }
 
-    const { title, body, users } = ctx.request.body;
-    const table = new Table({
+    const { title, body, password, users } = ctx.request.body;
+    const table = new Tables({
         title,
         body: sanitizeHtml(body, sanitizeOption),
         users,
@@ -76,8 +77,9 @@ export const write = async ctx => {
     });
     
     try{
+        await table.setPassword(password); // 비밀번호 설정
         await table.save();
-        ctx.body = table;
+        ctx.body = table.serialize(); // password 필드 제거
     }catch(e){
         ctx.throw(500, e);
     }
@@ -95,21 +97,24 @@ const removeHtmlAndShorten = body => {
     GET /api/posts?username=&tags=&page=
 */
 export const list = async ctx => {
+    // query는 문자열이기 때문에 숫자로 변환해 주어야 합니다.
+    // 값이 주어지지 않았다면 1을 기본으로 사용합니다.
+    const page = parseInt(ctx.query.page || '1', 10);
 
-    const {users, username} = ctx.query;
-    //tag, username 값이 유효하면 객체 안에 넣고, 그렇지 않으면 넣지 않음
-    const query = {
-        ...(username ? {'user.username' : username} : {}),
-        ...(users ? {users: users} : {}),
-    };
-
+    if(page < 1){
+        ctx.status = 400;
+        return;
+    }
+    const query = {};
     try{
-        const tables = await Table.find(query)
+        const tables = await Tables.find(query)
                         .sort({ _id: -1})
+                        .limit(10)
+                        .skip((page - 1) * 10)
                         .lean()  // 해당 데이터를 JSON형태로 조회
                         .exec(); //내림차순, 10개씩 보여주기
-        //const tableCount = await Post.countDocuments(query).exec();
-        //ctx.set('Last-Page', Math.ceil(postCount / 10));
+        const tableCount = await Tables.countDocuments(query).exec();
+        ctx.set('Last-Page', Math.ceil(tableCount / 10));
         ctx.body = tables.map(table => ({
                         ...table,
                         body: removeHtmlAndShorten(table.body),
@@ -126,7 +131,7 @@ export const read = async ctx => {
 export const remove = async ctx => {
     const { id } = ctx.params;
     try{
-        await Table.findByIdAndRemove(id).exec();
+        await Tables.findByIdAndRemove(id).exec();
         ctx.status = 204; // No Content (성공하기는 했지만 응답할 데이터는 없음)
     }catch (e){
         ctx.throw(500, e);
@@ -156,7 +161,7 @@ export const update = async ctx => {
     }
 
     try{
-        const table = await Table.findByIdAndUpdate(id, nextData, 
+        const table = await Tables.findByIdAndUpdate(id, nextData, 
             {
                 new: true, // 이 값을 설정하면 업데이트된 데이터를 반환합니다. 
                            // false일 때는 업데이트되기 전의 데이터를 반환합니다.
@@ -179,3 +184,51 @@ export const checkOwnTables = (ctx, next) => {
     }
     return next();
 }
+
+/* 
+    GET /api/tables/check
+*/
+export const check = async ctx => {
+    //로그인 상태 확인
+
+    const { password, id } = ctx.request.body;
+    
+    //username, password가 없으면 에러 처리
+    if(!id || !password){
+        ctx.status = 401; //Unauthorized
+        return;
+    }
+    
+    try{
+        const table = await Tables.findByUsername(id);
+        // 계정이 존재하지 않으면 에러 처리
+        if(!table){
+            ctx.status = 401;
+            return;
+        }
+        const valid = await table.checkPassword(password);
+        //잘못된 비밀번호
+        if(!valid){
+            ctx.status = 401;
+            return;
+        }
+        ctx.body = table.serialize();
+        //토큰을 쿠키에 저장
+        const token = table.generateToken();
+        ctx.cookies.set('access_table_token', token, {
+            maxAge: 1000 * 60 * 60 * 24 * 7, //7일
+            httpOnly: true,
+        });
+    }catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+/* 
+    POST /api/tables/tableout
+*/
+export const tableout = async ctx => {
+    //로그아웃
+    ctx.cookies.set('access_table_token');
+    ctx.status = 204; // No Content
+};

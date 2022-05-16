@@ -94,7 +94,6 @@ export const write = async ctx => {
     const schema = Joi.object().keys({
         // 객체가 다음 필드를 가지고 있음을 검증
         title: Joi.string().required(), // required()가 있으면 필수 항목
-        body: Joi.string().required(),
         startDay: Joi.string().required(),
         startDate: {
             year: Joi.string().required(),
@@ -116,14 +115,37 @@ export const write = async ctx => {
             text: Joi.string().required(),
         }
     });
-    // 검증하고 나서 검증 실패인 경우 에러 처리
-    const result = schema.validate(ctx.request.body);
+    // 검증하고 나서 검증 실패인 경우 에러 처리 (body를 뺌, 필수 아님)
+    const check = {
+        title: ctx.request.body.title,
+        startDay: ctx.request.body.startDay,
+        startDate: {
+            year: ctx.request.body.startDate.year,
+            month: ctx.request.body.startDate.month,
+            date: ctx.request.body.startDate.date,
+            hour: ctx.request.body.startDate.hour,
+            min: ctx.request.body.startDate.min,
+        },
+        endDay: ctx.request.body.endDay,
+        endDate: {
+            year: ctx.request.body.endDate.year,
+            month: ctx.request.body.endDate.month,
+            date: ctx.request.body.endDate.date,
+            hour: ctx.request.body.endDate.hour,
+            min: ctx.request.body.endDate.min,
+        },
+        label: {
+            style: ctx.request.body.label.style,
+            text: ctx.request.body.label.text,
+        }
+    }
+    const result = schema.validate(check);
     if(result.error){
         ctx.status = 400; // Bad Request
         ctx.body = result.error;
         return;
     }
-
+    const { _id, title:tableTitle, username } = ctx.state.table;
     const { title, body, startDay, startDate, endDay, endDate, label } = ctx.request.body;
     const calendar = new Calendar({
         title,
@@ -134,7 +156,11 @@ export const write = async ctx => {
         endDate,
         label,
         user: ctx.state.user,
-        table: ctx.state.table,
+        table : {
+            _id,
+            title: tableTitle,
+            username,
+        },
     });
     
     try{
@@ -157,6 +183,7 @@ const removeHtmlAndShorten = body => {
     GET /api/calendar?year=&month=
 */
 export const list = async ctx => {
+    const {_id, title} = ctx.state.table;
     const startDay = ctx.query.start;
     const endDay = ctx.query.end;
     if(startDay.length < 1 || endDay.length < 1){
@@ -170,7 +197,9 @@ export const list = async ctx => {
     //$gte:해당 값보다 크거나 같은 컬럼 값, 이상, $gt:해당 값보다 큰 컬럼 값, 초과 
     //$lte:해당 값보다 작거나 같은 컬럼 값, 이하, $lt:해당 값보다 작은 컬럼 값, 미만
     const query = {
-        ...(startDay && endDay ? {$or:[
+        ...(startDay && endDay ? {$and:[
+            {'table._id' : _id},
+            {$or:[
                 {$and : [
                         {'startDate.year' : startDate[0]},
                         {$and : [
@@ -190,6 +219,7 @@ export const list = async ctx => {
                     ]
                 },
             ]
+        }]
         } : {}),
     };
 
@@ -227,35 +257,55 @@ export const remove = async ctx => {
 
 export const update = async ctx => {
     const { id } = ctx.params;
-    // write에서 사용한 schema와 비슷한데, required()가 없습니다.
     const schema = Joi.object().keys({
         // 객체가 다음 필드를 가지고 있음을 검증
-        title: Joi.string().required(), // required()가 있으면 필수 항목
-        body: Joi.string().required(),
-        startDay: Joi.string().required(),
+        title: Joi.string(), // required()가 있으면 필수 항목
+        startDay: Joi.string(),
         startDate: {
-            year: Joi.string().required(),
-            month: Joi.string().required(),
-            date: Joi.string().required(),
-            hour: Joi.string().required(),
-            min: Joi.string().required(),
+            year: Joi.string(),
+            month: Joi.string(),
+            date: Joi.string(),
+            hour: Joi.string(),
+            min: Joi.string(),
         },
-        endDay: Joi.string().required(),
+        endDay: Joi.string(),
         endDate: {
-            year: Joi.string().required(),
-            month: Joi.string().required(),
-            date: Joi.string().required(),
-            hour: Joi.string().required(),
-            min: Joi.string().required(),
+            year: Joi.string(),
+            month: Joi.string(),
+            date: Joi.string(),
+            hour: Joi.string(),
+            min: Joi.string(),
         },
         label: {
-            style: Joi.string().required(),
-            text: Joi.string().required(),
+            style: Joi.string(),
+            text: Joi.string(),
         }
     });
-
-    // 검증하고 나서 검증 실패인 경우 에러 차리
-    const result = schema.validate(ctx.request.body);
+    const check = {
+        title: ctx.request.body.title,
+        startDay: ctx.request.body.startDay,
+        startDate: {
+            year: ctx.request.body.startDate.year,
+            month: ctx.request.body.startDate.month,
+            date: ctx.request.body.startDate.date,
+            hour: ctx.request.body.startDate.hour,
+            min: ctx.request.body.startDate.min,
+        },
+        endDay: ctx.request.body.endDay,
+        endDate: {
+            year: ctx.request.body.endDate.year,
+            month: ctx.request.body.endDate.month,
+            date: ctx.request.body.endDate.date,
+            hour: ctx.request.body.endDate.hour,
+            min: ctx.request.body.endDate.min,
+        },
+        label: {
+            style: ctx.request.body.label.style,
+            text: ctx.request.body.label.text,
+        }
+    }
+    // 검증하고 나서 검증 실패인 경우 에러 차리(body를 뺌, 필수 아님)
+    const result = schema.validate(check);
     if(result.error){
         ctx.status = 400; // Bad Request
         ctx.body = result.error;
