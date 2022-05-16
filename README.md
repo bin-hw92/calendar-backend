@@ -54,11 +54,16 @@ https://user-images.githubusercontent.com/45866008/168208289-5dd56bd7-1552-465f-
 
 
 #### 22-05-16 추가사항
-- 게시판 등록화면 추가
-- 비밀번호 입력 시 달력화면으로 입장
-![Screenshot 2022-05-16 at 18 58 27](https://user-images.githubusercontent.com/45866008/168568550-849ed49d-8126-4a94-a448-3dc6b181f2f6.jpg)
-![Screenshot 2022-05-16 at 18 58 46](https://user-images.githubusercontent.com/45866008/168568557-8983301a-5b74-4f51-8a2d-ea9444088412.jpg)
 ![Screenshot 2022-05-16 at 18 57 19](https://user-images.githubusercontent.com/45866008/168568537-97f58bf8-b803-4d4c-ab59-ebe97d6822ae.jpg)
+- 게시판 등록화면 추가
+- 제목, 비밀번호, 내용 모두 필수 입니다.
+
 ![Screenshot 2022-05-16 at 18 58 12](https://user-images.githubusercontent.com/45866008/168568546-ece5f509-8215-4b8d-b7f0-5a2f31447b6e.jpg)
+![Screenshot 2022-05-16 at 18 58 27](https://user-images.githubusercontent.com/45866008/168568550-849ed49d-8126-4a94-a448-3dc6b181f2f6.jpg)
+- 비밀번호 입력 후 입장 버튼을 클릭하면 됩니다.
+- 비밀번호 미입력이나 틀릴 경우 메세지 나타납니다.
+
+![Screenshot 2022-05-16 at 18 58 46](https://user-images.githubusercontent.com/45866008/168568557-8983301a-5b74-4f51-8a2d-ea9444088412.jpg)
+- 달력 입장 시 해당 게시판명이 나타나며, 오른쪽 상단 나가기 버튼 이용하면 됩니다.
 
 
