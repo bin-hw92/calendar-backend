@@ -1,4 +1,4 @@
-const checkLoggedIn = (ctx, next) => {
+export const checkLoggedIn = (ctx, next) => {
     if(!ctx.state.user){
         ctx.status = 401; // Unauthorized
         return;
@@ -6,4 +6,10 @@ const checkLoggedIn = (ctx, next) => {
     return next();
 };
 
-export default checkLoggedIn;
+ export const checkTableIn = (ctx, next) => {
+    if(!ctx.state.table){
+        ctx.status = 401; // Unauthorized
+        return;
+    }
+    return next();
+};

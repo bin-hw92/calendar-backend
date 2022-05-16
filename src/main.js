@@ -8,6 +8,7 @@ import serve from "koa-static";
 import path from "path";
 import send from "koa-send";
 import jwtMiddleware from "./lib/jwtMiddleware";
+import jwtTableMiddleware from "./lib/jwtTableMiddleware";
 
 // 비구조화 할당을 통해 process.env 내부 값에 대한 레퍼런스 만들기
 const { PORT, MONGO_URI } = process.env;
@@ -31,6 +32,7 @@ router.use('/api', api.routes());
 // 라우터 적용 전에  bodyParser 적용
 app.use(bodyParser());
 app.use(jwtMiddleware); //토큰 쿠키 확인용 미들웨어
+app.use(jwtTableMiddleware); //토큰 쿠키 확인용 미들웨어
 
 // app 인스턴스에 라우터 적용
 app.use(router.routes()).use(router.allowedMethods());

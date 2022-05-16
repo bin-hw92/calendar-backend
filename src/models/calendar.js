@@ -34,6 +34,7 @@ const CalendarSchema = new Schema({
     table: {
         _id: mongoose.Types.ObjectId,
         title: String,
+        username: String,
     }
 });
 
