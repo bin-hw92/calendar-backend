@@ -1,4 +1,5 @@
 import Tables from "../../models/tables";
+import Calendar from "../../models/calendar";
 import mongoose from "mongoose";
 import Joi from "joi";
 import sanitizeHtml from "sanitize-html";
@@ -131,6 +132,7 @@ export const read = async ctx => {
 export const remove = async ctx => {
     const { id } = ctx.params;
     try{
+        await Calendar.deleteMany({'table._id' : id}).exec();//달력 할 일들 먼저 지우기
         await Tables.findByIdAndRemove(id).exec();
         ctx.status = 204; // No Content (성공하기는 했지만 응답할 데이터는 없음)
     }catch (e){
