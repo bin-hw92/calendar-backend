@@ -5,6 +5,7 @@
 - 추후 계속 업그레이드 예정 
 - 아직 호스팅 서버를 안 정해서 오픈은 X
 - 프론트단 관련 소스 -> https://github.com/bin-hw92/calendar-frontend x 해당 프로젝트 사용 안 함 -> 앞으로 https://github.com/bin-hw92/calendar-type-frontend
+- NextJs 버전은 https://github.com/bin-hw92/calendar-type-nextjs
 
 ### 할 일 공유 달력 서버(백엔드 기술)
 - Koa 사용
@@ -33,6 +34,7 @@
   - [ ] 여러가지 아이디어 적용하기
 
   - [x] 프론트부분 Typescript 적용하기 (22.05.26 적용 앞으로 calendar-type-frontend에서 프론트단 개발 예정)
+  - [x] NextJS로 마이그레이션 적용 (22.05.27 적용 일단 calendar-type-frontend에서 새기능들 작업 후 계속 마이그레이션 할 예정)
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ### 화면 UI (22-05-12 기준)
 
