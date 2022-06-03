@@ -100,6 +100,7 @@ export const login = async ctx => {
     GET /api/auth/check
 */
 export const check = async ctx => {
+    console.log(ctx);
     //로그인 상태 확인
     const {user} = ctx.state;
     if(!user){
@@ -107,6 +108,7 @@ export const check = async ctx => {
         ctx.status = 401; //Unauthorized
         return;
     }
+    console.log(user);
     ctx.body = user;
 };
 
