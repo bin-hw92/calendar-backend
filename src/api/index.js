@@ -6,6 +6,8 @@ import tables from "./tables";
 
 const api = new Router();
 
+console.log('api index 부분 입니다.');
+
 api.use('/calendar', calendars.routes());
 api.use('/auth', auth.routes());
 api.use('/holiday', holiday.routes());

@@ -25,7 +25,7 @@ mongoose.connect(MONGO_URI)
 
 const app = new Koa();
 const router = new Router();
-
+console.log('접근 할 때마다 ㄱㄱㄱ');
 //라우터 설정
 router.use('/api', api.routes());
 
