@@ -76,3 +76,7 @@ https://user-images.githubusercontent.com/45866008/168208289-5dd56bd7-1552-465f-
 - 달력 입장 시 해당 게시판명이 나타나며, 오른쪽 상단 나가기 버튼 이용하면 됩니다.
 
 
+#### 22-06-13 추가사항 (주별모드)
+https://user-images.githubusercontent.com/45866008/173301108-bc3fdb0d-1290-4d04-a6bf-8121a25b140b.mp4
+- 달력 주별모드 추가 사용 
+
