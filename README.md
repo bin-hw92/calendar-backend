@@ -78,5 +78,5 @@ https://user-images.githubusercontent.com/45866008/168208289-5dd56bd7-1552-465f-
 
 #### 22-06-13 추가사항 (주별모드)
 https://user-images.githubusercontent.com/45866008/173301108-bc3fdb0d-1290-4d04-a6bf-8121a25b140b.mp4
-- 달력 주별모드 추가 사용 
+- 달력 주별모드 추가 사용 영상
 
