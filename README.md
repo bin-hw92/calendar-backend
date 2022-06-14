@@ -28,11 +28,11 @@
   - [x] 게시판 비밀번호 기능 
     - [x] 게시판 수정 및 삭제 기능 추가 예정 (삭제 시 해당 게시판에 적은 할 일 다 삭제) 
     - [x] 자잘한 기능 추가 필요(비밀번호 입력 후 엔터로 체크, 수정 클릭 시 변경까지의 텀을 위해 로딩 넣기 등)
-  - [ ] 모바일 UI 좀 더 다듬기
+  - [ ] 모바일 UI 좀 더 다듬기 (styled 06.14 적용)
     - [x] Calendar.css 제거 -> styled component로 변경
-    - [ ] Todo.css 제거 -> styled component로 변경
+    - [x] Todo.css 제거 -> styled component로 변경
     - [x] Loading.css 제거 -> styled component로 변경
-    - [ ] Table.css 제거 -> styled component로 변경
+    - [x] Table.css 제거 -> styled component로 변경
   - [ ] 년, 주, 일로 할 일 모아보기 기능 및 UI 개발 추후 예정
     - [x] 주별 모드 추가 완료 (calendar-type-frontend 프로젝트만 현재 적용 : 22.06.13)
   - [ ] 회원가입 기능 강화
