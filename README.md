@@ -34,7 +34,8 @@
     - [x] Loading.css 제거 -> styled component로 변경
     - [x] Table.css 제거 -> styled component로 변경
   - [ ] 년, 주, 일로 할 일 모아보기 기능 및 UI 개발 추후 예정
-    - [x] 주별 모드 추가 완료 (calendar-type-frontend 프로젝트만 현재 적용 : 22.06.13)
+    - [x] 주별 모드 추가 완료 (calendar-type-frontend 프로젝트 적용 : 22.06.13, nextjs 프로젝트 적용: 06.15)
+    - [x] 주별, 월별 onClick 커스텀Hook으로 변경(22.06.15)
   - [ ] 회원가입 기능 강화
   - [ ] 여러가지 아이디어 적용하기
 
