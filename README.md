@@ -7,6 +7,8 @@
 - 프론트단 관련 소스 -> https://github.com/bin-hw92/calendar-frontend x 해당 프로젝트 사용 안 함 -> 앞으로 https://github.com/bin-hw92/calendar-type-frontend
 - NextJs 버전은 https://github.com/bin-hw92/calendar-type-nextjs
 
+- 오랜만에 기능 추가함 -> Google 로그인 기능 구현 (09-27)
+
 ### 할 일 공유 달력 서버(백엔드 기술)
 - Koa 사용
 - MongoDB 사용
@@ -15,6 +17,7 @@
   - React 사용
   - Redux-saga 사용
   - css 사용 반응형 웹으로 개발
+  - React-Google-Login 추가 (09-27)
 
 
 ### 현재 기능 및 앞으로 구현 내용
