@@ -3,6 +3,7 @@ import calendars from "./calendar";
 import auth from "./auth";
 import holiday from "./holiday";
 import tables from "./tables";
+import rottos from "./rottos";
 
 const api = new Router();
 
@@ -12,6 +13,7 @@ api.use('/calendar', calendars.routes());
 api.use('/auth', auth.routes());
 api.use('/holiday', holiday.routes());
 api.use('/tables', tables.routes());
+api.use('/rottos', rottos.routes());
 
 //라우터를 내보냅니다.
 export default api;
