@@ -46,7 +46,7 @@ const save2 = async ({rnumber, count}) => {
 
 export const list = async ctx => {
     try{
-        const rottos = await Rottos.find({count: {$gt: 3}})
+        const rottos = await Rottos.find({count: {$gt: 5}})
                         .sort({ count: -1})
                         .lean()
                         .exec();
