@@ -58,11 +58,8 @@ const save2 = async ({rnumber, count}) => {
 
 export const list = async ctx => {
     try{
-        const max = await Rottos.find()
-                                .sort({ count: -1})
-                                .limit(1)
-                                .exec();
-        const rottos = await Rottos.find({count: {$gt: max[0].count}})
+        const max = await maxCount();
+        const rottos = await Rottos.find({count: {$gt: max-1}})
                         .sort({ count: -1})
                         .lean()
                         .exec();
@@ -72,3 +69,12 @@ export const list = async ctx => {
         ctx.throw(500, e);
     }
 };
+
+export const maxCount = async () => {
+    try{
+        const max = await Rottos.find().sort({ count: -1}).limit(1);
+        return Number(max[0].count);
+    }catch (e){
+        ctx.throw(500, e);
+    }
+}
