@@ -5,21 +5,33 @@ export const save = async ctx => {
     const { rnumber, count } = ctx.request.body;
 
      try{
-        rnumber.map(async (item, index) => {
-            const count2 = count[index];
-            const number = item;
-            const test = await save2({rnumber:number, count:count2});
-            if(index === rnumber.length-1){
-                console.log(test, '###2#');
-                ctx.body = test;
-            }
-        });
-        ctx.body = 'test';
-        return;
+        const result2 = await saveAwait(rnumber, count);
+        if(!result2){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = result2;
     }catch(e){
         console.log(e);
         ctx.throw(500, e);
-    } 
+    }
+};
+export const saveAwait = async (rnumber, count) => {
+    let answer = 0;
+    const result = await rnumber.map(async (item, index) => {
+        const count2 = count[index];
+        const number = item;
+        const test = await save2({rnumber:number, count:count2});
+        if(await test){
+            answer++;
+            if(answer === rnumber.length){
+                console.log(test, 'DB 저장 완료 ###2#');
+                return test;
+            }
+        }
+    }).flatMap(item => item);
+    
+    return await result;
 };
 
 const save2 = async ({rnumber, count}) => {
@@ -46,7 +58,11 @@ const save2 = async ({rnumber, count}) => {
 
 export const list = async ctx => {
     try{
-        const rottos = await Rottos.find({count: {$gt: 5}})
+        const max = await Rottos.find()
+                                .sort({ count: -1})
+                                .limit(1)
+                                .exec();
+        const rottos = await Rottos.find({count: {$gt: max[0].count}})
                         .sort({ count: -1})
                         .lean()
                         .exec();
